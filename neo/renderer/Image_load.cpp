@@ -315,6 +315,11 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 		}
 	}
 
+	//16f
+	if (minimumDepth == TD_16F) {
+		return GL_RGBA16F;
+	}
+
 	// there will probably be some drivers that don't
 	// correctly handle the intensity/alpha/luminance/luminance+alpha
 	// formats, so provide a fallback that only uses the rgb/rgba formats

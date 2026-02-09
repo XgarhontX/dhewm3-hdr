@@ -149,7 +149,8 @@ typedef enum {
 	TD_DIFFUSE,				// may be compressed
 	TD_DEFAULT,				// will use compressed formats when possible
 	TD_BUMP,				// may be compressed with 8 bit lookup
-	TD_HIGH_QUALITY			// either 32 bit or a component format, no loss at all
+	TD_HIGH_QUALITY,		// either 32 bit or a component format, no loss at all
+	TD_16F                  // For 16-bit float textures
 } textureDepth_t;
 
 typedef enum {

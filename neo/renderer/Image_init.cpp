@@ -391,6 +391,19 @@ static void R_RGBA8Image( idImage *image ) {
 		TF_DEFAULT, false, TR_REPEAT, TD_HIGH_QUALITY );
 }
 
+static void R_RGBA16FImage( idImage *image ) {
+	float	data[DEFAULT_SIZE][DEFAULT_SIZE][4];
+
+	memset( data, 0, sizeof( data ) ); //TODO: This is AI ahh. Check.
+	data[0][0][0] = 0.5f;
+	data[0][0][1] = 1.0f;
+	data[0][0][2] = 1.5f;
+	data[0][0][3] = 2.0f;
+
+	image->GenerateImage( (byte *)data, DEFAULT_SIZE, DEFAULT_SIZE,
+		TF_DEFAULT, false, TR_REPEAT, TD_16F );
+}
+
 static void R_DepthImage( idImage *image ) {
 	byte	data[DEFAULT_SIZE][DEFAULT_SIZE][4];
 
@@ -2003,12 +2016,12 @@ void idImageManager::Init() {
 
 	// cinematicImage is used for cinematic drawing
 	// scratchImage is used for screen wipes/doublevision etc..
-	cinematicImage = ImageFromFunction("_cinematic", R_RGBA8Image );
-	scratchImage = ImageFromFunction("_scratch", R_RGBA8Image );
-	scratchImage2 = ImageFromFunction("_scratch2", R_RGBA8Image );
-	accumImage = ImageFromFunction("_accum", R_RGBA8Image );
+	cinematicImage = ImageFromFunction("_cinematic", R_RGBA16FImage/*R_RGBA8Image*/ );
+	scratchImage = ImageFromFunction("_scratch", R_RGBA16FImage/*R_RGBA8Image*/ );
+	scratchImage2 = ImageFromFunction("_scratch2", R_RGBA16FImage/*R_RGBA8Image*/ );
+	accumImage = ImageFromFunction("_accum", R_RGBA16FImage/*R_RGBA8Image*/ );
 	scratchCubeMapImage = ImageFromFunction("_scratchCubeMap", makeNormalizeVectorCubeMap );
-	currentRenderImage = ImageFromFunction("_currentRender", R_RGBA8Image );
+	currentRenderImage = ImageFromFunction("_currentRender", R_RGBA16FImage/*R_RGBA8Image*/ );
 	currentDepthImage = ImageFromFunction( "_currentDepth", R_DepthImage ); // #3877. Allow shaders to access scene depth
 
 	cmdSystem->AddCommand( "reloadImages", R_ReloadImages_f, CMD_FL_RENDERER, "reloads images" );
