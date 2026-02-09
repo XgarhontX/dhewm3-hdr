@@ -440,7 +440,7 @@ const char* softpartFShader = "!!ARBfp1.0  \n"
 	"\n"
 	"# Calculate final fade and apply the channel mask \n"
 	"MUL      fade, near_fade, fade; \n"
-	"ADD_SAT  fade, fade, program.env[24];  # saturate the channels that don't want modifying \n"
+	"ADD      fade, fade, program.env[24];  # saturate the channels that don't want modifying \n"
 	"\n"
 	"# Set the color. Multiply by vertex/fragment color as that's how the particle system fades particles in and out \n"
 	"TEMP  oColor; \n"
@@ -588,7 +588,7 @@ void R_LoadARBProgram( int progIndex ) {
 			// POW might not work with a negative base (it looks wrong with intel's Linux driver)
 			// and clamping values >1 to 1 is ok because when writing to result.color
 			// it's clamped anyway and pow(base, exp) is always >= 1 for base >= 1
-			"MUL_SAT dhewm3tmpres.xyz, program.env[21], dhewm3tmpres;\n" // first multiply with brightness
+			"MUL     dhewm3tmpres.xyz, program.env[21], dhewm3tmpres;\n" // first multiply with brightness
 			"POW result.color.x, dhewm3tmpres.x, program.env[21].w;\n" // then do pow(dhewm3tmpres.xyz, vec3(1/gamma))
 			"POW result.color.y, dhewm3tmpres.y, program.env[21].w;\n" // (apparently POW only supports scalars, not whole vectors)
 			"POW result.color.z, dhewm3tmpres.z, program.env[21].w;\n"
