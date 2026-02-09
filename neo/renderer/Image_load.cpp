@@ -1950,7 +1950,7 @@ void idImage::CopyFramebuffer( int x, int y, int imageWidth, int imageHeight, bo
 				junk[i+1] = 255;
 			}
 #endif
-			qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, potWidth, potHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, junk );
+			qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB16F, potWidth, potHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, junk );
 			Mem_Free( junk );
 
 			qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, x, y, imageWidth, imageHeight );
