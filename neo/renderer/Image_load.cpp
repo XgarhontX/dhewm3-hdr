@@ -1919,9 +1919,7 @@ void idImage::CopyFramebuffer( int x, int y, int imageWidth, int imageHeight, bo
 		imageHeight = 512;
 	}
 
-	// if the size isn't a power of 2, the image must be increased in size
-	int	potWidth, potHeight;
-
+	int potWidth, potHeight;
 	potWidth = MakePowerOfTwo( imageWidth );
 	potHeight = MakePowerOfTwo( imageHeight );
 
@@ -1930,34 +1928,20 @@ void idImage::CopyFramebuffer( int x, int y, int imageWidth, int imageHeight, bo
 
 	qglReadBuffer( GL_BACK );
 
-	// only resize if the current dimensions can't hold it at all,
-	// otherwise subview renderings could thrash this
 	if ( ( useOversizedBuffer && ( uploadWidth < potWidth || uploadHeight < potHeight ) )
 		|| ( !useOversizedBuffer && ( uploadWidth != potWidth || uploadHeight != potHeight ) ) ) {
 		uploadWidth = potWidth;
 		uploadHeight = potHeight;
+        
 		if ( potWidth == imageWidth && potHeight == imageHeight ) {
-			qglCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, x, y, imageWidth, imageHeight, 0 );
+			//copy ez
+			qglCopyTexImage2D( GL_TEXTURE_2D, 0, GL_RGB16F, x, y, imageWidth, imageHeight, 0 );
 		} else {
-			byte	*junk;
-			// we need to create a dummy image with power of two dimensions,
-			// then do a qglCopyTexSubImage2D of the data we want
-			// this might be a 16+ meg allocation, which could fail on _alloca
-			junk = (byte *)Mem_Alloc( potWidth * potHeight * 4 );
-			memset( junk, 0, potWidth * potHeight * 4 );		//!@#
-#if 0 // Disabling because it's unnecessary and introduces a green strip on edge of _currentRender
-			for ( int i = 0 ; i < potWidth * potHeight * 4 ; i+=4 ) {
-				junk[i+1] = 255;
-			}
-#endif
-			qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB16F, potWidth, potHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, junk );
-			Mem_Free( junk );
-
+			//create new pow2 res
+			qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB16F, potWidth, potHeight, 0, GL_RGB, GL_FLOAT, nullptr);
 			qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, x, y, imageWidth, imageHeight );
 		}
 	} else {
-		// otherwise, just subimage upload it so that drivers can tell we are going to be changing
-		// it and don't try and do a texture compression or some other silliness
 		qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, x, y, imageWidth, imageHeight );
 	}
 
@@ -1971,7 +1955,6 @@ void idImage::CopyFramebuffer( int x, int y, int imageWidth, int imageHeight, bo
 
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
